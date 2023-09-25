@@ -36,15 +36,26 @@ const fs = require("fs");
 const http = require("http");
 const url = require("url");
 
+const data = fs.readFileSync(`${__dirname}/dev-data/data.json`,'utf-8');
+const dataObj = JSON.parse(data);
+
 const server = http.createServer((req,res)=>{
     //console.log(req.url)
     pathName = req.url
-    
+    // Overview page
     if(pathName === '/' || pathName === '/overview'){
         res.end('This is an OVERVEW page!')
+    // Prodact page
     }else if(pathName === '/product'){
         res.end('This is a PRODUCT page!')
-    }else{
+    // API page
+    }else if(pathName === '/api'){
+        res.writeHead(200,{'Content-type':'application/json'})
+        res.end(data)
+        
+    }
+    // Page not found
+    else{
         res.writeHead(404,{
             'Content-type':'text/html',
             'my-own-header':'hello-world'
