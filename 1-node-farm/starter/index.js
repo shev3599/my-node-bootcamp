@@ -36,16 +36,25 @@ const fs = require("fs");
 const http = require("http");
 const url = require("url");
 
-const tempOverview = fs.readFileSync(`${__dirname}/templates/`,'utf-8');
+const tempOverview = fs.readFileSync(`${__dirname}/templates/template-overview.html`,'utf-8');
+const tempCard = fs.readFileSync(`${__dirname}/templates/template-card.html`,'utf-8');
+const tempProduct = fs.readFileSync(`${__dirname}/templates/template-product.html`,'utf-8');
+
 const data = fs.readFileSync(`${__dirname}/dev-data/data.json`,'utf-8');
 const dataObj = JSON.parse(data);
+
+const replaceTemplate = (temp, product) =>{
+
+}
 
 const server = http.createServer((req,res)=>{
     //console.log(req.url)
     pathName = req.url
     // Overview page
     if(pathName === '/' || pathName === '/overview'){
-        res.end('This is an OVERVEW page!')
+        res.writeHead(200,{'Content-type':'text/html'});
+        const cardsHtml = dataObj.map(el => replaceTemplate(tempCard,el));
+        res.end(tempOverview);
     // Prodact page
     }else if(pathName === '/product'){
         res.end('This is a PRODUCT page!')
