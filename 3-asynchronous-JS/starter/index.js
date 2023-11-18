@@ -4,7 +4,7 @@ const superagent = require('superagent');
 const readFilePro = (file) => {
   return new Promise((resolve, reject) => {
     fs.readFile(file, (err, data) => {
-      if (err) reject(console.log('Error:', err.message));
+      if (err) reject('Cannot read file! Sorry!!!');
       resolve(data);
     });
   });
@@ -12,12 +12,13 @@ const readFilePro = (file) => {
 
 const writeFilePro = (file, data) => {
   return new Promise((resolve, reject) => {
-    fs.writeFile((file, data, err) => {
-      if (err) reject('Could not write file :(');
+    fs.writeFile(file, data, (err) => {
+      if (err) reject('Could not write file 😢!');
       resolve('File was written with success');
     });
   });
 };
+
 
 readFilePro(`${__dirname}/dog.txt`)
   .then((data) => {
