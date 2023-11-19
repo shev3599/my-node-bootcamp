@@ -19,7 +19,6 @@ const writeFilePro = (file, data) => {
   });
 };
 
-
 readFilePro(`${__dirname}/dog.txt`)
   .then((data) => {
     console.log(`Breed: ${data}`);
