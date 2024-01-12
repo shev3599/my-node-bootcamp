@@ -1,21 +1,26 @@
 const express = require('express');
 const fs = require('fs');
+const morgan = require('morgan');
+
 const app = express();
+
+//1. Middlewares
+
 app.use(express.json());
+app.use((req, res, next) => {
+  console.log('Hello from middleware 1 🤝');
+  next();
+});
+app.use((req, res, next) => {
+  console.log('Hello from middleware 2 🤞');
+  req.requestTime = new Date().toISOString();
+  next();
+});
 
-// app.get('/', (req, res) => {
-//   res.status(220).json({
-//     message: 'This is GET method test',
-//     app: 'Natours',
-//   });
-// });
+app.use(morgan('dev'));
 
-// app.post('/', (req, res) => {
-//   res.status(210).json({
-//     message: 'This is POST method test',
-//     app: 'Natours',
-//   });
-// });
+// 2. Route handlers
+
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}\\dev-data\\data\\tours-simple.json`)
 );
@@ -27,6 +32,7 @@ const getAllTours = (req, res) => {
 };
 const getOneTour = (req, res) => {
   console.log('req.params:', req.params.id);
+  console.log('req.requestTime', req.requestTime);
   const tour = tours.find((el) => el.id === req.params.id * 1);
   if (!tour) {
     return res.status(404).json({
@@ -36,6 +42,7 @@ const getOneTour = (req, res) => {
   }
   res.status(200).json({
     status: 'success',
+    reqestedAt: req.requestTime,
     data: { tour },
   });
 };
@@ -93,12 +100,16 @@ const deleteOneTour = (req, res) => {
 //app.patch('/api/v1/tours/:id/', updateOneTour);
 //app.delete('/api/v1/tours/:id/', deleteOneTour);
 
+// 3. Routes
+
 app.route('/api/v1/tours').get(getAllTours).post(createOneTour);
 app
   .route('/api/v1/tours/:id/')
   .get(getOneTour)
   .patch(updateOneTour)
   .delete(deleteOneTour);
+
+// 4. Start the server
 
 port = 3000;
 app.listen(port, () => {
